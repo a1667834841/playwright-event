@@ -1,0 +1,20 @@
+{
+  "name": "playwright-google",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.9.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "google": "ts-node google/searchWord.ts",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  },
+  "type": "module"
+}
