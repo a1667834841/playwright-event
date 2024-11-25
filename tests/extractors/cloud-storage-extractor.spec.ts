@@ -26,7 +26,7 @@ test.describe('CloudStorageExtractor 测试', () => {
     test('应该能识别包含云盘关键词的页面', async ({ page }) => {
         // 准备测试服务器
         await page.route('**/*', route => {
-            console.log('路由被触发', route);
+            // console.log('路由被触发', route);
             route.fulfill({
                 status: 200,
                 contentType: 'text/html; charset=UTF-8',
