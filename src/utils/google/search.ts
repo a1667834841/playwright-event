@@ -4,7 +4,7 @@ const google_url = 'https://www.google.com';
 
 export const searchGoogle = async (keyword: string) => {
   const browser = await chromium.launch({
-    headless: false
+    headless: true
   });
   const page = await browser.newPage();
   
