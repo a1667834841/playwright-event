@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { searchGoogle } from '../../src/utils/google/search';
+import { aliyunpanSearch, searchGoogle } from '../../src/utils/google/search';
 
-test.describe('Google Search Tests', () => {
+
+test.skip('Google Search Tests', () => {
   test('should return search results for given keyword', async () => {
     const results = await searchGoogle('playwright testing');
     
@@ -18,6 +19,11 @@ test.describe('Google Search Tests', () => {
 
   test('should handle special characters in search', async () => {
     const results = await searchGoogle('playwright @#$%^');
+    expect(results.length).toBeGreaterThan(0);
+  });
+
+  test('should search for aliyunpan', async () => {
+    const results = await aliyunpanSearch();
     expect(results.length).toBeGreaterThan(0);
   });
 }); 

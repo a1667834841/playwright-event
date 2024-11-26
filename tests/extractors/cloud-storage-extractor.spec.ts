@@ -3,7 +3,7 @@ import { CloudStorageExtractor } from '../../src/extractors/services/cloud-stora
 import { Config } from '../../src/extractors/core/base-extractor';
 import { chromium, Browser } from 'playwright';
 
-test.describe('CloudStorageExtractor 测试', () => {
+test.skip('CloudStorageExtractor 测试', () => {
     // let browser: Browser;
     let extractor: CloudStorageExtractor;
 

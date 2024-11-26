@@ -10,10 +10,12 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "google": "ts-node google/searchWord.ts",
+    "google": "ts-node src/utils/google/search.ts",
     "test": "playwright test"
   },
   "dependencies": {
+    "@types/jsdom": "^21.1.7",
+    "jsdom": "^25.0.1",
     "playwright": "^1.49.0"
   },
   "type": "module"
