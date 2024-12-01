@@ -1,14 +1,20 @@
-import { CrawlResult } from "../models/CrawlResult";
+import { ExtractData } from "../../extractors/core/extractor";
+import { CrawlOptions } from "../base/BaseCrawler";
 
 export interface ICrawler {
     // 爬虫基础配置
     config: ICrawlerConfig;
     
     // 开始爬取
-    crawl(url: string): Promise<CrawlResult>;
+    crawl(options?: CrawlOptions): Promise<ExtractData[]>;
+
+    // 开始爬取
+    start(options: CrawlOptions): void;
     
     // 停止爬取
     stop(): void;
+
+
     
     // 设置爬取间隔
     setInterval(ms: number): void;

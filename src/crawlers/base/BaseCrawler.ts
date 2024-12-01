@@ -1,3 +1,4 @@
+import { ExtractData } from '../../extractors/core/extractor';
 import { ICrawler, ICrawlerConfig } from '../interfaces/ICrawler';
 import { IFetcher } from '../interfaces/IFetcher';
 import { IParser } from '../interfaces/IParser';
@@ -5,13 +6,15 @@ import { CrawlResult } from '../models/CrawlResult';
 import { Response } from 'playwright';
 
 export class CrawlOptions {
-    extractCode?: string;
+    extractTimes?: number; // 提取次数，满足后停止抓取
+    startUrl?: string; // 开始抓取的URL
 }
 
 export abstract class BaseCrawler implements ICrawler {
   protected isRunning: boolean = false;
   protected urlQueue: string[] = [];
   protected visitedUrls: Set<string> = new Set();
+  protected extractDatas: ExtractData[] = [];
   
   constructor(
     public readonly config: ICrawlerConfig,
@@ -19,24 +22,59 @@ export abstract class BaseCrawler implements ICrawler {
     protected readonly parser: IParser
   ) {}
 
+  public setExtractDatas(extractDatas: ExtractData[]): void {
+    this.extractDatas = extractDatas;
+  }
+  protected pushExtractDatas(extractDatas: ExtractData[]): void {
+    // 修改数组的push方法调用
+    if (Array.isArray(extractDatas)) {
+        this.extractDatas.push(...extractDatas);
+    }
+  }
+
+
+  // 开始爬取
+  public async start(options: CrawlOptions): Promise<void> {
+    if (options == null) {
+      throw new Error('Crawl options is required');
+    }
+    if (options.startUrl == null) {
+      throw new Error('Start URL is required');
+    }
+    await this.crawl(options);
+  }
+
   // 核心爬取方法
-  public async crawl(startUrl: string, options?: CrawlOptions): Promise<CrawlResult> {
+  public async crawl( options: CrawlOptions): Promise<ExtractData[]> {
     try {
       this.isRunning = true;
-      this.urlQueue.push(startUrl);
+      if (options?.startUrl) {
+        this.urlQueue.push(options.startUrl);
+      }
       
-      const results: CrawlResult[] = [];
       
       while (this.isRunning && this.urlQueue.length > 0) {
         const urls = this.getBatch();
         const batchResults = await this.processBatch(urls);
-        results.push(...batchResults);
+        for (const result of batchResults) {
+          if (result.success && Array.isArray(result.data)) {
+            // 确保result.data是数组再进行操作
+            this.pushExtractDatas(result.data);
+            // 移除已抓取的页面
+            await this.fetcher.removeFetchedPages();
+          }
+        }
+        if (options?.extractTimes && this.extractDatas.length >= options.extractTimes) {
+          this.stop();
+          break;
+        }
+
         
         // 控制爬取间隔
         await this.delay(this.config.interval || 1000);
       }
       
-      return this.mergeCrawlResults(results);
+      return this.extractDatas;
       
     } catch (error) {
       this.handleError(error);
@@ -44,11 +82,20 @@ export abstract class BaseCrawler implements ICrawler {
     }
   }
 
+  // 定义一个回调函数
+  public onStoped: ((extractDatas: ExtractData[]) => void) | null = null;
+ 
+
   // 停止爬取
   public stop(): void {
     this.isRunning = false;
     this.urlQueue = [];
+    if (this.onStoped) {
+      this.onStoped(this.extractDatas);
+    }
   }
+
+
 
   // 设置爬取间隔
   public setInterval(ms: number): void {
@@ -69,7 +116,11 @@ export abstract class BaseCrawler implements ICrawler {
   // 处理一批URL
   protected async processBatch(urls: string[]): Promise<CrawlResult[]> {
     const promises = urls.map(url => this.processUrl(url));
-    return Promise.all(promises);
+
+    // 过滤掉失败的结果
+    return Promise.all(promises).then(results => {
+      return results.filter(result => result.success && result.data && result.data.length > 0);
+    });
   }
 
   // 处理单个URL
@@ -77,7 +128,7 @@ export abstract class BaseCrawler implements ICrawler {
     try {
       // 检查URL是否已访问
       if (this.visitedUrls.has(url)) {
-        return { url, success: false, reason: 'URL already visited' };
+        return {  success: false, reason: 'URL already visited' };
       }
       
       this.visitedUrls.add(url);
@@ -96,17 +147,13 @@ export abstract class BaseCrawler implements ICrawler {
       this.addNewUrls(newUrls);
 
       // 处理页面数据
-      const data = await this.extractData(content);
+      const result = await this.extractData(content);
       
-      return {
-        url,
-        success: true,
-        data,
-      };
+      return result;
 
     } catch (error) {
       return this.handleUrlError(url, error);
-    }
+    } 
   }
 
   // 提取URL的抽象方法 - 由子类实现
@@ -134,18 +181,21 @@ export abstract class BaseCrawler implements ICrawler {
   // URL处理错误
   protected handleUrlError(url: string, error: any): CrawlResult {
     return {
-      url,
       success: false,
       reason: error.message,
     };
   }
 
   // 合并爬取结果
-  protected mergeCrawlResults(results: CrawlResult[]): CrawlResult {
+  public mergeCrawlResults(): CrawlResult {
     // 实现结果合并逻辑
-    return {
+   return {
       success: true,
-      data: results,
+      data: this.extractDatas,
     };
+  }
+
+  public getVisitedUrls(): Set<string> {
+    return this.visitedUrls;
   }
 }

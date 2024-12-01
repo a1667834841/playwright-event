@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { AliYunPanExtractor } from '../src/extractors/AliYunPanExtractor';
+import { fail } from 'assert';
+import { CrawlPanSite } from '../src/types/PanSiteType';
 
 test.describe('AliYunPanExtractor Tests', () => {
     let extractor: AliYunPanExtractor;
 
     test.beforeEach(() => {
         extractor = new AliYunPanExtractor({
-            siteUrl: 'https://www.qileso.com'
+            siteUrl: CrawlPanSite.QILE_PAN
         });
     });
 
@@ -24,10 +26,10 @@ test.describe('AliYunPanExtractor Tests', () => {
         `;
 
         const result = await extractor.extract(mockHtml);
-        
+
         expect(result.success).toBe(true);
         expect(result.data).toHaveLength(2);
-        
+
         // 验证第一个链接
         expect(result.data[0]).toEqual({
             url: 'https://www.alipan.com/s/123456',
@@ -55,7 +57,11 @@ test.describe('AliYunPanExtractor Tests', () => {
         extractor = new AliYunPanExtractor({
             siteUrl: 'https://unsupported.com'
         });
-
-        await expect(extractor.extract('')).rejects.toThrow('Unsupported site URL');
+        try {
+            await extractor.extract('');
+            fail('Should have thrown an error');
+        } catch (error: unknown) {
+            expect((error as Error).message).toBe('Unsupported site URL');
+        }
     });
-});
+}); 
