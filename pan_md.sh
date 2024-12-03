@@ -1,27 +1,15 @@
 #!/bin/bash
 
-# 接收JSON数据作为参数
-json_data=$1
+# 获取docs/pan目录下最新的文件
+latest_file=$(ls -t docs/pan | head -n 1)
 
-# 创建resource/pan目录（如果不存在）
-mkdir -p resource/pan
+# 提取日期 (假设文件名格式为 aliyun-pan-YYYY-MM-DD.md)
+date=$(echo $latest_file | grep -o '[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}')
 
-# 生成当前日期作为文件名
-date_str=$(date +%Y%m%d)
-file_path="resource/pan/${date_str}.md"
+# 构建新的README内容
+content=$'# 网盘资源\n\n## 阿里云盘\n\n'
+content+=$'### '"$date"$'\n\n'
+content+=$(cat "docs/pan/$latest_file")
 
-# 从JSON提取数据
-title=$(echo $json_data | jq -r '.title')
-type=$(echo $json_data | jq -r '.type')
-urls=$(echo $json_data | jq -r '.urls[] | "- [资源链接](" + .url + ")"')
-
-# 生成markdown内容
-cat << EOF > "$file_path"
-# ${title}
-
-| 类型 | 链接 |
-|------|------|
-| ${type} | ${urls} |
-EOF
-
-echo "已生成文件：${file_path}"
+# 将新内容写入README.md
+echo "$content" > README.md

@@ -58,8 +58,21 @@ export class AliYunPanExtractor extends BaseExtractor {
         const document = dom.window.document;
 
         // 找到页面 rel="bookmark"的text
-        const bookmark = document.querySelector('a[rel="bookmark"]')?.textContent;
+        let bookmark = document.querySelector('a[rel="bookmark"]')?.textContent;
+        if (bookmark){
+            // 移除 夸克网盘、阿里网盘、百度网盘、迅雷网盘
+            bookmark = bookmark.replace(/夸克网盘|阿里网盘|百度网盘|迅雷网盘/g, '');
+            // 移除空格
+            bookmark = bookmark.replace(/\s+/g, '');
+        }
+        let title = bookmark || '';
+        if (title.length > 0){
+            // 只提取《》之间的文字
+            title = title.match(/《(.*?)》/)?.[1] || '';
+        }
 
+        // 提取出 #body > div > div.thread-body > div.thread-top.text-center.my-4 > div > span:nth-child(2)
+        const updateTime = document.querySelector('#body > div > div.thread-body > div.thread-top.text-center.my-4 > div > span:nth-child(2)')?.textContent;
         // 查找所有阿里云盘链接
         const links = document.querySelectorAll('a');
         const panLinks = Array.from(links)
@@ -78,12 +91,17 @@ export class AliYunPanExtractor extends BaseExtractor {
         for (const panLink of uniquePanLinks) {
             const extractData: ExtractData = {
                 url: panLink.url,
-                title: bookmark || '',
+                title: title,
+                allTitle: bookmark || '',
                 extractCode: panLink.extractCode || '',
-                panType: '阿里云盘'
+                panType: '阿里云盘',
+                updateTime: updateTime || '',
             };
             extractDataList.push(extractData);
         }
+
+        //TODO 如果title有相同的，只取extractDataList中updateTime最大的extractData
+        
         return extractDataList;
     }
 

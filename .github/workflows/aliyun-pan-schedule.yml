@@ -1,0 +1,55 @@
+name: aliyun pan schedule
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+#   schedule:
+#   # 每12小时运行一次
+#   - cron:  '2 */12 * * *'
+jobs:
+  test:
+    timeout-minutes: 600
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Cache dependencies
+      id: cache-deps
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Cache Playwright browsers
+      id: cache-playwright
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
+    - name: Install dependencies
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+      run: npm install -g yarn && yarn
+    - name: Install Playwright Browsers
+      if: steps.cache-playwright.outputs.cache-hit != 'true'
+      run: yarn playwright install --with-deps
+    - name: Run pan task
+      run: ./pan_run.sh && ./pan_md.sh
+    - name: Commit files
+      run: |
+         git config --local user.email "a1667834841@qq.com"
+         git config --local user.name "ggball"
+         git pull
+         git add README.md
+         git commit -m "update readme.md"
+    - name: Push changes
+      uses:  ad-m/github-push-action@master
+      with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         branch: main

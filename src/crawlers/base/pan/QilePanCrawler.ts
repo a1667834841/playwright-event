@@ -6,6 +6,7 @@ import { BaseParser } from "../../interfaces/IParser";
 import { BaseFetcher } from "../../interfaces/IFetcher";
 import { AliYunPanExtractor } from "../../../extractors/AliYunPanExtractor";
 import { CrawlPanSite } from "../../../types/PanSiteType";
+import fs from 'fs';
 
 export class QilePanCrawler extends BaseCrawler {
 
@@ -43,21 +44,28 @@ export class QilePanCrawler extends BaseCrawler {
   }
 
   public async toMd(): Promise<string> {
-    if (this.extractDatas.length == 0) {
-      return '';
-    }
-    
-    // 将提取结果转换为markdown格式
-    const extractDatas = this.extractDatas;
- 
-    let md = '| 标题 | 网盘类型 | 链接 |\n| --- | --- | --- |\n';
-    
-    for (const extractData of extractDatas) {
-      md += `| ${extractData.title} | ${extractData.panType} | ${extractData.url} |\n`;
-    }
-    
-    return md;
-}
+      if (this.extractDatas.length == 0) {
+        return '';
+      }
+      
+      // 将提取结果转换为markdown格式
+      const extractDatas = this.extractDatas;
+  
+      let md = '| 标题 | 网盘类型 | 更新时间 | 链接 |\n| --- | --- | --- | --- |\n';
+      
+      for (const extractData of extractDatas) {
+        md += `| ${extractData.title} | ${extractData.panType} | ${extractData.updateTime} | ${extractData.url} |\n`;
+      }
+      
+      return md;
+  }
+
+  public async createMdFile(path: string): Promise<void> {
+    const md = await this.toMd();
+    // 当前日期
+    const date = new Date().toISOString().split('T')[0];
+    fs.writeFileSync(`${path}/aliyun-pan-${date}.md`, md, { encoding: 'utf-8' });
+  }
 
 
 }
