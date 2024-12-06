@@ -16,7 +16,7 @@ test.describe('AliYunPanExtractor Tests', () => {
         const mockHtml = `
             <html>
                 <body>
-                    <a rel="bookmark">测试资源标题</a>
+                    <a rel="bookmark">《测试资源标题》</a>
                     <div>
                         <a href="https://www.alipan.com/s/123456">资源1 提取码：abc123</a>
                         <a href="https://www.alipan.com/s/789012">资源2 验证码：def456</a>
@@ -35,6 +35,8 @@ test.describe('AliYunPanExtractor Tests', () => {
             url: 'https://www.alipan.com/s/123456',
             title: '测试资源标题',
             extractCode: 'abc123',
+            updateTime: '',
+            allTitle: '《测试资源标题》',
             panType: '阿里云盘'
         });
 
@@ -43,6 +45,8 @@ test.describe('AliYunPanExtractor Tests', () => {
             url: 'https://www.alipan.com/s/789012',
             title: '测试资源标题',
             extractCode: 'def456',
+            updateTime: '',
+            allTitle: '《测试资源标题》',
             panType: '阿里云盘'
         });
     });

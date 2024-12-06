@@ -2,7 +2,8 @@ name: Aliyun Pan Schedule
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # 每8小时运行一次
+    # - cron: '0 */12 * * *'  # 每8小时运行一次
+    - cron: '0 */1 * * *'  # 每分钟运行一次
   workflow_dispatch:        # 允许手动触发
 
 jobs:

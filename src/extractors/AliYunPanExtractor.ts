@@ -66,7 +66,7 @@ export class AliYunPanExtractor extends BaseExtractor {
             bookmark = bookmark.replace(/\s+/g, '');
         }
         let title = bookmark || '';
-        if (title.length > 0){
+        if (title.length > 0 && title.includes('《')){
             // 只提取《》之间的文字
             title = title.match(/《(.*?)》/)?.[1] || '';
         }

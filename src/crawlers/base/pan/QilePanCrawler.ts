@@ -54,7 +54,7 @@ export class QilePanCrawler extends BaseCrawler {
       let md = '| 标题 | 网盘类型 | 更新时间 | 链接 |\n| --- | --- | --- | --- |\n';
       
       for (const extractData of extractDatas) {
-        md += `| ${extractData.title} | ${extractData.panType} | ${extractData.updateTime} | ${extractData.url} |\n`;
+        md += `| ${extractData.title || ''} | ${extractData.panType || ''} | ${extractData.updateTime || ''} | ${extractData.url || ''} |\n`;
       }
       
       return md;

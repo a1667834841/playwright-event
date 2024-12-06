@@ -101,10 +101,10 @@ test.describe('QilePan Crawler Tests', () => {
 
     // 验证生成的markdown格式
     expect(md).toBe(
-      '| 标题 | 网盘类型 | 链接 |\n' +
-      '| --- | --- | --- |\n' +
-      '| 测试标题1 | 阿里云盘 | https://www.alipan.com/s/test1 |\n' +
-      '| 测试标题2 | 阿里云盘 | https://www.alipan.com/s/test2 |\n'
+      '| 标题 | 网盘类型 | 更新时间 | 链接 |\n' +
+      '| --- | --- | --- | --- |\n' +
+      '| 测试标题1 | 阿里云盘 |  | https://www.alipan.com/s/test1 |\n' +
+      '| 测试标题2 | 阿里云盘 |  | https://www.alipan.com/s/test2 |\n'
     );
   });
 
