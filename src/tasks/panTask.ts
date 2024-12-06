@@ -18,9 +18,9 @@ export async function qilePanTask(options: CrawlOptions): Promise<void> {
 
 
 // 执行qilePanTask方法
-const options: CrawlOptions = {
-    startUrl: CrawlPanSite.QILE_PAN,
-    extractTimes: 10
-}
-qilePanTask(options);
+// const options: CrawlOptions = {
+//     startUrl: CrawlPanSite.QILE_PAN,
+//     extractTimes: 10
+// }
+// qilePanTask(options);
 
