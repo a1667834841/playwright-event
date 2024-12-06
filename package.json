@@ -12,7 +12,8 @@
   "scripts": {
     "google": "ts-node src/utils/google/search.ts",
     "play-test": "playwright test",
-    "play-debug": "playwright test --debug"
+    "play-debug": "playwright test --debug",
+    "pan": "ts-node src/tasks/panTask.ts"
   },
   "dependencies": {
     "@types/jsdom": "^21.1.7",

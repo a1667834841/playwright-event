@@ -2,6 +2,7 @@
 import { QilePanCrawler } from "../crawlers/base/pan/QilePanCrawler";
 import { CrawlOptions } from "../crawlers/base/BaseCrawler";
 import path from "path";
+import { CrawlPanSite, PanSiteType } from "../types/PanSiteType";
 
 const OUTPUT_PATH = '/docs/pan/';
 
@@ -15,3 +16,12 @@ export async function qilePanTask(options: CrawlOptions): Promise<void> {
     await crawler.createMdFile(path.join(rootPath, OUTPUT_PATH));
 
 }
+
+
+// 执行qilePanTask方法
+const options: CrawlOptions = {
+    startUrl: CrawlPanSite.QILE_PAN,
+    extractTimes: 3
+}
+qilePanTask(options);
+

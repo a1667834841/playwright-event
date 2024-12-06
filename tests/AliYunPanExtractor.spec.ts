@@ -32,11 +32,11 @@ test.describe('AliYunPanExtractor Tests', () => {
 
         // 验证第一个链接
         expect(result.data[0]).toEqual({
+            updateTime: '',
+            allTitle: '《测试资源标题》',
             url: 'https://www.alipan.com/s/123456',
             title: '测试资源标题',
             extractCode: 'abc123',
-            updateTime: '',
-            allTitle: '《测试资源标题》',
             panType: '阿里云盘'
         });
 

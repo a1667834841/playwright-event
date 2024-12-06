@@ -54,7 +54,7 @@ export class QilePanCrawler extends BaseCrawler {
       let md = '| 标题 | 网盘类型 | 更新时间 | 链接 |\n| --- | --- | --- | --- |\n';
       
       for (const extractData of extractDatas) {
-        md += `| ${extractData.title || ''} | ${extractData.panType || ''} | ${extractData.updateTime || ''} | ${extractData.url || ''} |\n`;
+        md += `| ${extractData.allTitle || ''} | ${extractData.panType || ''} | ${extractData.updateTime || ''} | ${extractData.url || ''} |\n`;
       }
       
       return md;
@@ -64,7 +64,11 @@ export class QilePanCrawler extends BaseCrawler {
     const md = await this.toMd();
     // 当前日期
     const date = new Date().toISOString().split('T')[0];
-    fs.writeFileSync(`${path}/aliyun-pan-${date}.md`, md, { encoding: 'utf-8' });
+    // 没有目录则创建
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+    }
+    fs.writeFileSync(`${path}/qile-pan-${date}.md`, md, { encoding: 'utf-8' });
   }
 
 
