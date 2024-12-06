@@ -87,11 +87,13 @@ test.describe('QilePan Crawler Tests', () => {
     crawler.setExtractDatas([
       {
         title: '测试标题1',
+        allTitle: '测试标题1',
         panType: '阿里云盘',
         url: 'https://www.alipan.com/s/test1'
       },
       {
         title: '测试标题2', 
+        allTitle: '测试标题2',
         panType: '阿里云盘',
         url: 'https://www.alipan.com/s/test2'
       }
