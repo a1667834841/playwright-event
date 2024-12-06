@@ -35,6 +35,9 @@ export class BaseFetcher implements IFetcher {
             return response as Response;
         } catch (error) {
             console.error(`Error fetching ${url}:`, error);
+            if (page) {
+                await page.close();
+            }
             throw error;
         } finally {
             if (page) {
