@@ -3,7 +3,7 @@ name: Aliyun Pan Schedule
 on:
   schedule:
     # - cron: '0 */12 * * *'  # 每8小时运行一次
-    - cron: '0 */1 * * *'  # 每分钟运行一次
+    - cron: '0 */1 * * *'  # 每1个小时运行一次
   workflow_dispatch:        # 允许手动触发
 
 jobs:
@@ -36,6 +36,7 @@ jobs:
           git config --local user.name "ggball"
           git add .
           git commit -m "Update pan resources" || exit 0
+          git pull
       - name: Push changes
         uses:  ad-m/github-push-action@master
         with:
