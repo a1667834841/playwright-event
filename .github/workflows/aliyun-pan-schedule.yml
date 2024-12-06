@@ -31,8 +31,12 @@ jobs:
           
       - name: Commit and push if changed
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "a1667834841@qq.com"
+          git config --local user.name "ggball"
           git add .
           git commit -m "Update pan resources" || exit 0
-          git push
+      - name: Push changes
+        uses:  ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
