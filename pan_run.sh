@@ -8,9 +8,5 @@ URL=${1:-$DEFAULT_URL}        # 如果没有提供第一个参数，使用默认
 TIMES=${2:-$DEFAULT_TIMES}    # 如果没有提供第二个参数，使用默认次数
 
 # 执行 Node 脚本并传递参数
-pwd
-ls
-
-yarn pan 
-
+node --loader ts-node/esm src/tasks/panTask.ts
 echo "爬取完成！URL: $URL, 次数: $TIMES"
