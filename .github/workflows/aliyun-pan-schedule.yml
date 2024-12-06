@@ -12,14 +12,33 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          
+          node-version: lts/*
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
       - name: Install dependencies
-        run: npm install && npm i ts-node -D
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: npm install -g yarn && yarn
+      - name: Install Playwright Browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps
+      
           
       - name: Add execute permissions to shell scripts
         run: |
