@@ -4,6 +4,7 @@ export interface IFetcher {
     fetch(url: string, options?: FetchOptions): Promise<Response>;
     downloadFile(url: string, path: string): Promise<void>;
     removeFetchedPages(): Promise<void>;
+    close(): Promise<void>;
 }
 
 export interface FetchOptions {
@@ -50,6 +51,11 @@ export class BaseFetcher implements IFetcher {
             page.close();
         });
         this.fetchedPages = [];
+    }
+
+    async close(): Promise<void> {
+        await this.removeFetchedPages();
+        await this.browser.close();
     }
 }
 

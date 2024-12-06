@@ -87,12 +87,18 @@ export abstract class BaseCrawler implements ICrawler {
  
 
   // 停止爬取
-  public stop(): void {
-    this.isRunning = false;
-    this.urlQueue = [];
-    if (this.onStoped) {
-      this.onStoped(this.extractDatas);
+  public async stop(): Promise<void> {
+    try{
+      this.isRunning = false;
+      this.urlQueue = [];
+      if (this.onStoped) {
+        this.onStoped(this.extractDatas);
+      }
+    } finally {
+      // 关闭浏览器
+      await this.fetcher.close();
     }
+  
   }
 
 

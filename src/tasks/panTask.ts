@@ -12,8 +12,7 @@ const rootPath = path.resolve(process.cwd());
 export async function qilePanTask(options: CrawlOptions): Promise<void> {
     const crawler = await QilePanCrawler.create();
     await crawler.start(options);
-
-    await crawler.createMdFile(path.join(rootPath, OUTPUT_PATH));
+    crawler.createMdFile(path.join(rootPath, OUTPUT_PATH));
 
 }
 
@@ -21,7 +20,7 @@ export async function qilePanTask(options: CrawlOptions): Promise<void> {
 // 执行qilePanTask方法
 const options: CrawlOptions = {
     startUrl: CrawlPanSite.QILE_PAN,
-    extractTimes: 3
+    extractTimes: 10
 }
 qilePanTask(options);
 

@@ -36,12 +36,12 @@ test.describe('QilePan Crawler Tests', () => {
     try {
 
       const options: CrawlOptions = {
-        startUrl: 'https://www.qileso.com/62136.html',
-        extractTimes: 1,
+        startUrl: 'https://www.qileso.com',
+        extractTimes: 3,
       };
 
       // 添加详细日志
-      console.log('开始抓取:', 'https://www.qileso.com/62136.html');
+      console.log('开始抓取:', 'https://www.qileso.com');
 
       await crawler.start(options);
 
